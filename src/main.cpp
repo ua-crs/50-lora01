@@ -27,10 +27,21 @@
  *      LORA_SEND       1 for sending, 0 for receiving
  */
 
+static void
+pulse_led(void)
+{
+    digitalWrite(LED, HIGH);
+    delay(100);
+    digitalWrite(LED, LOW);
+    delay(100);
+}
+
+
 void
 setup(void)
 {
     // initialize Serial Monitor
+    pinMode(LED, OUTPUT);
     Serial.begin(SERIAL_BAUD);
     while (!Serial)
     ;
@@ -45,7 +56,7 @@ setup(void)
 
     while (!LoRa.begin(RFM_FREQ))
     {
-        Serial.println(".");
+        Serial.print(".");
         delay(500);
     }
     Serial.println();
@@ -70,6 +81,7 @@ lora_loop(void)
     LoRa.endPacket();
 
     counter++;
+    pulse_led();
 
     delay(SEND_DELAY);
 }
@@ -96,6 +108,8 @@ lora_loop(void)
         // print RSSI of packet
         Serial.print("' with RSSI ");
         Serial.println(LoRa.packetRssi());
+
+        pulse_led();
     }
 }
 
